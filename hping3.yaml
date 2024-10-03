@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    app: hping3
+  name: hping3
+  namespace: netobserv-privileged
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hping3
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: hping3
+    spec:
+      containers:
+      - image: quay.io/jotak/hping3:latest
+        imagePullPolicy: Always
+        name: hping3
+        securityContext:
+          privileged: true
+          runAsUser: 0
+      serviceAccount: netobserv-ebpf-agent
+      serviceAccountName: netobserv-ebpf-agent
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
